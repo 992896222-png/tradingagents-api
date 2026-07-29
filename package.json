@@ -1,0 +1,9 @@
+{
+  "name": "tradingagents-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TradingAgents API on Netlify Functions",
+  "devDependencies": {
+    "netlify-cli": "^27.0.1"
+  }
+}

@@ -1,0 +1,20 @@
+[build]
+  command = "echo 'No build step needed for Python functions'"
+  functions = "netlify/functions"
+  publish = "."
+
+[functions]
+  # 60s timeout for synchronous functions
+  # TradingAgents makes multiple LLM calls, so we need the max
+  external_node_modules = []
+
+[functions."analyze"]
+  # Restrict to POST only
+  method = ["POST", "OPTIONS"]
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"

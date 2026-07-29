@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradingAgents API 测试</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    p.sub { color: #8b949e; margin-bottom: 24px; font-size: 0.9rem; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 24px; margin-bottom: 16px; }
+    label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; font-weight: 500; }
+    input, select { width: 100%; padding: 10px 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-size: 0.9rem; margin-bottom: 16px; }
+    input:focus, select:focus { outline: none; border-color: #2f81f7; }
+    .row { display: flex; gap: 12px; }
+    .row > * { flex: 1; }
+    button { width: 100%; padding: 12px; background: #2f81f7; color: #fff; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    button:hover { background: #3a8bff; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    pre { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 16px; overflow-x: auto; font-size: 0.85rem; white-space: pre-wrap; margin-top: 16px; display: none; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+    .badge-buy { background: #1a7f37; color: #fff; }
+    .badge-sell { background: #cf222e; color: #fff; }
+    .badge-hold { background: #9e6a03; color: #fff; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .result-item { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; padding: 12px; }
+    .result-item .label { font-size: 0.75rem; color: #8b949e; }
+    .result-item .value { font-size: 1.1rem; font-weight: 600; margin-top: 4px; }
+    .error { color: #f85149; }
+    .loading { text-align: center; padding: 20px; color: #8b949e; }
+    .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #30363d; border-top-color: #2f81f7; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TradingAgents API</h1>
+    <p class="sub">多智能体 LLM 金融交易分析框架 · Netlify 部署</p>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>Ticker</label>
+          <input type="text" id="ticker" value="NVDA" placeholder="AAPL">
+        </div>
+        <div>
+          <label>日期（可选）</label>
+          <input type="date" id="tradeDate">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>LLM Provider</label>
+          <select id="provider">
+            <option value="openai">OpenAI</option>
+            <option value="google_genai">Google Gemini</option>
+            <option value="anthropic">Anthropic Claude</option>
+          </select>
+        </div>
+        <div>
+          <label>Deep Think 模型</label>
+          <input type="text" id="deepModel" value="gpt-5.4">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Quick Think 模型</label>
+          <input type="text" id="quickModel" value="gpt-5.4-mini">
+        </div>
+        <div>
+          <label>输出语言</label>
+          <select id="language">
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁体中文</option>
+            <option value="en-US">English</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="analyze()">分析</button>
+    </div>
+
+    <div id="loading" class="loading" style="display:none">
+      <span class="spinner"></span>正在运行分析（LLM 调用需 10-30 秒）...
+    </div>
+
+    <pre id="result"></pre>
+
+    <div class="card" id="resultCard" style="display:none">
+      <h3 id="signalTitle" style="margin-bottom:12px"></h3>
+      <div class="result-grid">
+        <div class="result-item"><div class="label">信号</div><div class="value" id="rSignal"></div></div>
+        <div class="result-item"><div class="label">仓位比例</div><div class="value" id="rSize"></div></div>
+        <div class="result-item"><div class="label">目标价</div><div class="value" id="rTarget"></div></div>
+        <div class="result-item"><div class="label">止损价</div><div class="value" id="rStop"></div></div>
+        <div class="result-item"><div class="label">持有期</div><div class="value" id="rHorizon"></div></div>
+        <div class="result-item"><div class="label">置信度</div><div class="value" id="rConfidence"></div></div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="label">推理摘要</div>
+        <div id="rRationale" style="margin-top:6px;font-size:0.9rem;color:#8b949e;line-height:1.6"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function analyze() {
+      const btn = document.querySelector('button');
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+      const resultCard = document.getElementById('resultCard');
+
+      btn.disabled = true;
+      loading.style.display = 'block';
+      result.style.display = 'none';
+      resultCard.style.display = 'none';
+
+      const payload = {
+        ticker: document.getElementById('ticker').value.trim(),
+        date: document.getElementById('tradeDate').value || undefined,
+        llm_provider: document.getElementById('provider').value,
+        deep_think_llm: document.getElementById('deepModel').value,
+        quick_think_llm: document.getElementById('quickModel').value,
+        response_language: document.getElementById('language').value,
+        max_debate_rounds: 1,
+        max_risk_discuss_rounds: 1
+      };
+
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        result.textContent = JSON.stringify(data, null, 2);
+        result.style.display = 'block';
+
+        if (res.ok) {
+          document.getElementById('rSignal').textContent = data.signal;
+          document.getElementById('rSignal').className = 'value badge badge-' + data.signal?.toLowerCase();
+          document.getElementById('rSize').textContent = (data.size_fraction * 100).toFixed(1) + '%';
+          document.getElementById('rTarget').textContent = data.target_price ? '$' + data.target_price.toFixed(2) : '-';
+          document.getElementById('rStop').textContent = data.stop_loss ? '$' + data.stop_loss.toFixed(2) : '-';
+          document.getElementById('rHorizon').textContent = data.horizon_days ? data.horizon_days + ' 天' : '-';
+          document.getElementById('rConfidence').textContent = data.confidence;
+          document.getElementById('rRationale').textContent = data.rationale || '无';
+          document.getElementById('signalTitle').innerHTML = data.ticker + ' · ' + data.date;
+          resultCard.style.display = 'block';
+        } else {
+          document.getElementById('signalTitle').innerHTML = '错误';
+          document.getElementById('rRationale').textContent = data.error || '未知错误';
+          resultCard.style.display = 'block';
+        }
+      } catch (err) {
+        result.textContent = '请求失败: ' + err.message;
+        result.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
