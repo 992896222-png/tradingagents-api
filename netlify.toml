@@ -1,5 +1,5 @@
 [build]
-  command = "pip install --no-cache-dir -r requirements.txt"
+  command = "python -m pip install --no-cache-dir -r requirements.txt 2>&1"
   functions = "netlify/functions"
   publish = "."
 
