@@ -3,9 +3,6 @@
   functions = "netlify/functions"
   publish = "."
 
-[functions]
-  included_files = ["netlify/functions/trading_worker.py", "netlify/functions/runtime.txt"]
-
 [[headers]]
   for = "/*"
   [headers.values]
