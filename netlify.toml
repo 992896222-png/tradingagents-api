@@ -1,15 +1,12 @@
 [build]
-  command = "echo 'No build step needed for Python functions'"
+  command = "pip install -r requirements.txt"
   functions = "netlify/functions"
   publish = "."
 
 [functions]
-  # 60s timeout for synchronous functions
-  # TradingAgents makes multiple LLM calls, so we need the max
   external_node_modules = []
 
 [functions."analyze"]
-  # Restrict to POST only
   method = ["POST", "OPTIONS"]
 
 [[headers]]
