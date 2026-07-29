@@ -1,14 +1,7 @@
 [build]
-  command = "pip install --no-cache-dir -r requirements.txt"
+  command = "pip install -r requirements.txt"
   functions = "netlify/functions"
   publish = "."
-
-[functions]
-  external_node_modules = []
-  included_files = ["requirements.txt"]
-
-[functions."analyze"]
-  method = ["POST", "OPTIONS"]
 
 [[headers]]
   for = "/*"
