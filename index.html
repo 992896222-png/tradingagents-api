@@ -3,166 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>TradingAgents API</title>
+<title>TradingAgents</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0b0e14;color:#e1e7ef;min-height:100vh;display:flex;flex-direction:column}
-.app{max-width:800px;margin:0 auto;padding:32px 20px;width:100%;flex:1}
-header{margin-bottom:32px}
-header h1{font-size:1.4rem;font-weight:600;color:#f0f3f8;display:flex;align-items:center;gap:10px}
-header p{font-size:0.85rem;color:#6b7a8f;margin-top:4px}
-.provider-tabs{display:flex;gap:0;background:#131a24;border-radius:10px;padding:3px;border:1px solid #1f2a36;margin-bottom:20px}
-.provider-tab{flex:1;padding:10px 16px;border:none;background:transparent;color:#6b7a8f;font-size:0.85rem;font-weight:500;cursor:pointer;border-radius:7px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.provider-tab:hover{color:#c8d0da}
-.provider-tab.active{background:#1f2a36;color:#e1e7ef;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.provider-tab .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-.dot-openai{background:#74aa9c}
-.dot-deepseek{background:#4f8cff}
-.card{background:#111821;border:1px solid #1f2a36;border-radius:12px;padding:20px;margin-bottom:16px}
-.form-row{display:flex;gap:12px;margin-bottom:12px}
-.form-group{flex:1}
-.form-group label{display:block;font-size:0.78rem;color:#6b7a8f;margin-bottom:5px;font-weight:500}
-.form-group input,.form-group select{width:100%;padding:9px 11px;background:#0b0e14;border:1px solid #1f2a36;border-radius:7px;color:#e1e7ef;font-size:0.85rem}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#4a6f9f}
-.form-group select option{background:#111821}
-.model-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.model-chip{flex:1;min-width:140px}
-.model-chip-label{font-size:0.7rem;color:#495a6f;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-.model-chip input{width:100%;padding:7px 10px;background:#0b0e14;border:1px solid #1f2a36;border-radius:6px;color:#e1e7ef;font-size:0.82rem;font-family:monospace}
-.model-chip input:focus{outline:none;border-color:#4a6f9f}
-.btn-analyze{width:100%;padding:11px;background:#4a6f9f;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-analyze:hover{background:#5582b8}
-.btn-analyze:disabled{opacity:.4;cursor:not-allowed}
-.btn-analyze svg{width:16px;height:16px}
-.loading{display:none;text-align:center;padding:24px;color:#6b7a8f;font-size:0.85rem}
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid #1f2a36;border-top-color:#4a6f9f;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0b0e14;color:#e1e7ef}
+.app{max-width:780px;margin:0 auto;padding:28px 16px}
+h1{font-size:1.3rem;display:flex;align-items:center;gap:8px;color:#f0f3f8;margin-bottom:4px}
+h1 svg{width:22px;height:22px;color:#6e8ef7}
+.sub{font-size:0.82rem;color:#6b7a8f;margin-bottom:24px}
+.tw{display:flex;background:#131a24;border-radius:8px;padding:3px;border:1px solid #1f2a36;margin-bottom:16px}
+.tw button{flex:1;padding:9px;border:none;background:0 0;color:#6b7a8f;font-size:0.82rem;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px}
+.tw button:hover{color:#c8d0da}
+.tw button.on{background:#1f2a36;color:#e1e7ef}
+.tw .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.cd{background:#111821;border:1px solid #1f2a36;border-radius:10px;padding:18px;margin-bottom:14px}
+.rw{display:flex;gap:10px;margin-bottom:10px}
+.rw .g{flex:1}
+.rw label{display:block;font-size:0.75rem;color:#6b7a8f;margin-bottom:4px}
+.rw input,.rw select{width:100%;padding:8px 10px;background:#0b0e14;border:1px solid #1f2a36;border-radius:6px;color:#e1e7ef;font-size:0.82rem}
+.rw input:focus,.rw select:focus{outline:0;border-color:#4a6f9f}
+.mg{display:flex;gap:10px;margin-bottom:10px}
+.mg .mc{flex:1;min-width:120px}
+.mg .ml{font-size:0.68rem;color:#495a6f;margin-bottom:3px;text-transform:uppercase}
+.mg input{width:100%;padding:6px 9px;background:#0b0e14;border:1px solid #1f2a36;border-radius:5px;color:#e1e7ef;font-size:0.8rem;font-family:monospace}
+.btn{width:100%;padding:10px;background:#4a6f9f;color:#fff;border:none;border-radius:7px;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:hover{background:#5582b8}
+.btn:disabled{opacity:.4;cursor:default}
+.ld{display:none;text-align:center;padding:20px;color:#6b7a8f;font-size:0.82rem}
+.sp{display:inline-block;width:16px;height:16px;border:2px solid #1f2a36;border-top-color:#4a6f9f;border-radius:50%;animation:spin .8s linear infinite;margin-right:7px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.result-card{display:none;margin-top:16px;background:#111821;border:1px solid #1f2a36;border-radius:12px;overflow:hidden}
-.result-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1f2a36}
-.result-ticker{font-size:1.1rem;font-weight:700;color:#f0f3f8}
-.result-date{font-size:0.8rem;color:#6b7a8f;margin-left:8px}
-.result-provider{font-size:0.75rem;padding:3px 9px;border-radius:5px;background:#1f2a36;color:#6b7a8f}
-.signal-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:20px;font-size:0.85rem;font-weight:700}
-.signal-BUY{background:#143d26;color:#3fb97b}
-.signal-SELL{background:#3d1418;color:#f05a5a}
-.signal-HOLD{background:#3d3114;color:#d4a043}
-.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1f2a36}
-.result-cell{padding:14px 16px;background:#111821}
-.result-cell .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-.result-cell .value{font-size:1rem;font-weight:600;color:#e1e7ef}
-.rationale-section{padding:16px 20px;border-top:1px solid #1f2a36}
-.rationale-section .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
-.rationale-section .content{font-size:0.85rem;color:#9aabb8;line-height:1.7;white-space:pre-wrap}
-.analyst-tabs{display:flex;gap:2px;background:#131a24;border-radius:7px;padding:2px;margin-top:12px}
-.analyst-tab{flex:1;padding:7px;border:none;background:transparent;color:#6b7a8f;font-size:0.75rem;cursor:pointer;border-radius:5px;text-align:center}
-.analyst-tab.active{background:#1f2a36;color:#c8d0da}
-.analyst-content{display:none;padding:12px 16px;font-size:0.82rem;color:#8a9aaa;line-height:1.6;white-space:pre-wrap;border-top:1px solid #1f2a36}
-.analyst-content.show{display:block}
-.raw-toggle{text-align:center;padding:12px;border-top:1px solid #1f2a36;cursor:pointer}
-.raw-toggle span{font-size:0.75rem;color:#495a6f}
-.raw-toggle:hover span{color:#6b7a8f}
-.raw-json{display:none;padding:12px 16px;font-family:monospace;font-size:0.78rem;color:#6b7a8f;white-space:pre-wrap;background:#0b0e14;border-top:1px solid #1f2a36;max-height:300px;overflow:auto}
-.raw-json.show{display:block}
-.error-state{padding:20px;text-align:center}
-.error-state .err-icon{color:#f05a5a;margin-bottom:8px}
-.error-state .err-msg{font-size:0.9rem;color:#f05a5a}
-.error-state .err-detail{font-size:0.8rem;color:#6b7a8f;margin-top:6px}
-footer{margin-top:32px;text-align:center;font-size:0.75rem;color:#2d3a4a;padding:20px}
+.rc{display:none;margin-top:14px;background:#111821;border:1px solid #1f2a36;border-radius:10px;overflow:hidden}
+.rh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #1f2a36}
+.rtk{font-size:1rem;font-weight:700;color:#f0f3f8}
+.rdt{font-size:0.78rem;color:#6b7a8f;margin-left:7px}
+.rpv{font-size:0.72rem;padding:2px 8px;border-radius:4px;background:#1f2a36;color:#6b7a8f}
+.sg{display:inline-flex;padding:3px 12px;border-radius:16px;font-size:0.82rem;font-weight:700}
+.sg-BUY{background:#143d26;color:#3fb97b}
+.sg-SELL{background:#3d1418;color:#f05a5a}
+.sg-HOLD{background:#3d3114;color:#d4a043}
+.gr{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1f2a36}
+.cl{padding:12px 14px;background:#111821}
+.cl .l{font-size:0.68rem;color:#495a6f;text-transform:uppercase;margin-bottom:3px}
+.cl .v{font-size:0.95rem;font-weight:600}
+.sn{padding:14px 18px;border-top:1px solid #1f2a36}
+.sn .l{font-size:0.68rem;color:#495a6f;text-transform:uppercase;margin-bottom:6px}
+.sn .c{font-size:0.82rem;color:#9aabb8;line-height:1.6;white-space:pre-wrap}
+.an{display:flex;gap:2px;background:#131a24;border-radius:6px;padding:2px;margin-top:10px}
+.an button{flex:1;padding:6px;border:none;background:0 0;color:#6b7a8f;font-size:0.72rem;cursor:pointer;border-radius:4px;text-align:center}
+.an button.on{background:#1f2a36;color:#c8d0da}
+.ac{display:none;padding:10px 14px;font-size:0.8rem;color:#8a9aaa;line-height:1.5;white-space:pre-wrap;border-top:1px solid #1f2a36}
+.ac.sh{display:block}
+.tg{text-align:center;padding:10px;border-top:1px solid #1f2a36;cursor:pointer}
+.tg span{font-size:0.72rem;color:#495a6f}
+.tg:hover span{color:#6b7a8f}
+.rj{display:none;padding:10px 14px;font-family:monospace;font-size:0.75rem;color:#6b7a8f;white-space:pre-wrap;background:#0b0e14;border-top:1px solid #1f2a36;max-height:250px;overflow:auto}
+.rj.sh{display:block}
+.er{padding:18px;text-align:center}
+.er svg{color:#f05a5a;margin-bottom:6px}
+.er .m{font-size:0.85rem;color:#f05a5a}
+.ft{text-align:center;font-size:0.7rem;color:#2d3a4a;padding:24px 0 12px}
+.kb{background:#0b0e14;border:1px solid #1f2a36;border-radius:6px;padding:10px 14px;margin-top:10px}
+.kb code{font-size:0.78rem;color:#6b7a8f;word-break:break-all}
 </style>
 </head>
 <body>
 <div class="app">
-<header>
-<h1>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-TradingAgents
-</h1>
-<p>多智能体 LLM 金融分析 · 支持 OpenAI / DeepSeek</p>
-</header>
-<div class="provider-tabs" id="providerTabs">
-<button class="provider-tab active" data-provider="openai"><span class="dot dot-openai"></span> OpenAI</button>
-<button class="provider-tab" data-provider="deepseek"><span class="dot dot-deepseek"></span> DeepSeek</button>
+
+<h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>TradingAgents</h1>
+<div class="sub">多智能体 LLM 分析 · 需要配置 API Key</div>
+
+<div class="tw" id="tw">
+<button class="on" data-p="openai"><span class="dot" style="background:#74aa9c"></span>OpenAI</button>
+<button data-p="deepseek"><span class="dot" style="background:#4f8cff"></span>DeepSeek</button>
 </div>
-<div class="card">
-<div class="form-row">
-<div class="form-group"><label>股票代码</label><input type="text" id="ticker" value="NVDA" placeholder="例如: AAPL, 0700.HK"></div>
-<div class="form-group"><label>交易日期</label><input type="date" id="tradeDate"></div>
+
+<div class="cd">
+<div class="rw">
+<div class="g"><label>股票代码</label><input id="t" value="NVDA" placeholder="AAPL, 0700.HK"></div>
+<div class="g"><label>日期</label><input id="d" type="date"></div>
 </div>
-<div class="model-group">
-<div class="model-chip"><div class="model-chip-label">快速模型</div><input type="text" id="quickModel" value="gpt-4o-mini"></div>
-<div class="model-chip"><div class="model-chip-label">深度模型</div><input type="text" id="deepModel" value="gpt-4o"></div>
+<div class="mg">
+<div class="mc"><div class="ml">快速模型</div><input id="qm" value="gpt-4o-mini"></div>
+<div class="mc"><div class="ml">深度模型</div><input id="dm" value="gpt-4o"></div>
 </div>
-<div class="form-row">
-<div class="form-group"><label>输出语言</label><select id="language"><option value="zh-CN" selected>简体中文</option><option value="zh-TW">繁体中文</option><option value="en-US">English</option></select></div>
-<div class="form-group"><label>推理轮数</label><select id="debateRounds"><option value="1">1 轮</option><option value="2">2 轮</option><option value="3">3 轮</option></select></div>
+<div class="rw">
+<div class="g"><label>语言</label><select id="lang"><option value="zh-CN">中文</option><option value="en-US">English</option></select></div>
+<div class="g"><label>轮数</label><select id="rn"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
 </div>
-<button class="btn-analyze" onclick="analyze()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>开始分析</button>
+<button class="btn" id="go"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>分析</button>
 </div>
-<div class="loading" id="loading"><span class="spinner"></span>正在运行分析，等待 LLM 响应...</div>
-<div class="result-card" id="resultCard">
-<div class="result-header"><div><span class="result-ticker" id="rTicker"></span><span class="result-date" id="rDate"></span></div><span class="result-provider" id="rProvider"></span></div>
-<div style="padding:16px 20px;border-bottom:1px solid #1f2a36"><span class="signal-badge" id="rSignal"></span></div>
-<div class="result-grid">
-<div class="result-cell"><div class="label">仓位比例</div><div class="value" id="rSize"></div></div>
-<div class="result-cell"><div class="label">目标价</div><div class="value" id="rTarget"></div></div>
-<div class="result-cell"><div class="label">止损价</div><div class="value" id="rStop"></div></div>
-<div class="result-cell"><div class="label">持有周期</div><div class="value" id="rHorizon"></div></div>
-<div class="result-cell"><div class="label">置信度</div><div class="value" id="rConfidence"></div></div>
-<div class="result-cell"><div class="label">信号强度</div><div class="value" id="rSignalStrength"></div></div>
+
+<div class="ld" id="ld"><span class="sp"></span>正在调用 LLM...</div>
+
+<div class="rc" id="rc">
+<div class="rh"><div><span class="rtk" id="rtk"></span><span class="rdt" id="rdt"></span></div><span class="rpv" id="rpv"></span></div>
+<div style="padding:12px 18px;border-bottom:1px solid #1f2a36"><span class="sg" id="sg"></span></div>
+<div class="gr">
+<div class="cl"><div class="l">仓位</div><div class="v" id="v1"></div></div>
+<div class="cl"><div class="l">目标价</div><div class="v" id="v2"></div></div>
+<div class="cl"><div class="l">止损价</div><div class="v" id="v3"></div></div>
+<div class="cl"><div class="l">持股天数</div><div class="v" id="v4"></div></div>
+<div class="cl"><div class="l">置信度</div><div class="v" id="v5"></div></div>
+<div class="cl"><div class="l">信号强度</div><div class="v" id="v6"></div></div>
 </div>
-<div class="rationale-section"><div class="label">综合推理</div><div class="content" id="rRationale"></div></div>
-<div class="analyst-tabs" id="analystTabs">
-<button class="analyst-tab active" data-analyst="technical">技术面</button>
-<button class="analyst-tab" data-analyst="fundamentals">基本面</button>
-<button class="analyst-tab" data-analyst="sentiment">情绪面</button>
+<div class="sn"><div class="l">综合推理</div><div class="c" id="rr"></div></div>
+<div class="an" id="an">
+<button class="on" data-a="t">技术</button>
+<button data-a="f">基本</button>
+<button data-a="s">情绪</button>
 </div>
-<div class="analyst-content show" id="analyst-technical"></div>
-<div class="analyst-content" id="analyst-fundamentals"></div>
-<div class="analyst-content" id="analyst-sentiment"></div>
-<div class="raw-toggle" onclick="toggleRaw()"><span>查看原始 JSON</span></div>
-<div class="raw-json" id="rawJson"></div>
+<div class="ac sh" id="a0"></div>
+<div class="ac" id="a1"></div>
+<div class="ac" id="a2"></div>
+<div class="tg" onclick="document.getElementById('rj').classList.toggle('sh')"><span>查看 JSON</span></div>
+<pre class="rj" id="rj"></pre>
 </div>
+
+<div class="cd" style="border-color:#2d3a4a">
+<div style="font-size:0.75rem;color:#6b7a8f;margin-bottom:6px">需要配置 API Key</div>
+<div style="font-size:0.82rem;color:#8a9aaa;line-height:1.6">当前使用的是示例 Key，无法正常调用。<br>请在 Netlify 控制面板设置环境变量：<br><br>
+<code style="background:#0b0e14;padding:4px 8px;border-radius:4px;font-size:0.78rem">OPENAI_API_KEY</code> ← 你的 OpenAI Key<br>
+<code style="background:#0b0e14;padding:4px 8px;border-radius:4px;font-size:0.78rem">DEEPSEEK_API_KEY</code> ← 你的 DeepSeek Key<br><br>
+<a href="https://app.netlify.com/sites/joyful-torte-52702b/settings/env" target="_blank" style="color:#4a6f9f;font-size:0.82rem">点此设置 →</a></div>
 </div>
-<footer>API 由 Netlify Functions 驱动 · 数据仅供参考，不构成投资建议</footer>
+
+<div class="ft">仅供参考 · 不构成投资建议</div>
+</div>
+
 <script>
-function toggleRaw(){document.getElementById("rawJson").classList.toggle("show")}
-var P={openai:{quick:"gpt-4o-mini",deep:"gpt-4o"},deepseek:{quick:"deepseek-chat",deep:"deepseek-reasoner"}},cp="openai"
-document.querySelectorAll(".provider-tab").forEach(function(t){t.addEventListener("click",function(){
-document.querySelectorAll(".provider-tab").forEach(function(x){x.classList.remove("active")})
-t.classList.add("active");cp=t.dataset.provider;var m=P[cp]
-document.getElementById("quickModel").value=m.quick;document.getElementById("deepModel").value=m.deep
-})})
-document.querySelectorAll(".analyst-tab").forEach(function(t){t.addEventListener("click",function(){
-document.querySelectorAll(".analyst-tab").forEach(function(x){x.classList.remove("active")})
-document.querySelectorAll(".analyst-content").forEach(function(x){x.classList.remove("show")})
-t.classList.add("active");document.getElementById("analyst-"+t.dataset.analyst).classList.add("show")
-})})
-async function analyze(){
-var b=document.querySelector(".btn-analyze"),l=document.getElementById("loading"),r=document.getElementById("resultCard")
-b.disabled=true;l.style.display="block";r.style.display="none"
-var p={ticker:document.getElementById("ticker").value.trim(),date:document.getElementById("tradeDate").value||undefined,llm_provider:cp,quick_think_llm:document.getElementById("quickModel").value,deep_think_llm:document.getElementById("deepModel").value,response_language:document.getElementById("language").value,max_debate_rounds:parseInt(document.getElementById("debateRounds").value),max_risk_discuss_rounds:1,reasoning_effort:"medium"}
+var P={openai:{q:"gpt-4o-mini",d:"gpt-4o"},deepseek:{q:"deepseek-chat",d:"deepseek-reasoner"}},cp="openai"
+document.querySelectorAll("#tw button").forEach(function(t){
+t.onclick=function(){
+document.querySelectorAll("#tw button").forEach(function(x){x.classList.remove("on")})
+t.classList.add("on");cp=t.dataset.p;var m=P[cp]
+document.getElementById("qm").value=m.q;document.getElementById("dm").value=m.d
+}})
+document.querySelectorAll("#an button").forEach(function(t){
+t.onclick=function(){
+document.querySelectorAll("#an button").forEach(function(x){x.classList.remove("on")})
+document.querySelectorAll(".ac").forEach(function(x){x.classList.remove("sh")})
+t.classList.add("on")
+var idx={t:0,f:1,s:2}[t.dataset.a];document.querySelectorAll(".ac")[idx].classList.add("sh")
+}})
+document.getElementById("go").onclick=async function(){
+var b=document.getElementById("go"),ld=document.getElementById("ld"),rc=document.getElementById("rc")
+b.disabled=true;ld.style.display="";rc.style.display="none"
+var p={ticker:document.getElementById("t").value.trim(),llm_provider:cp,quick_think_llm:document.getElementById("qm").value,deep_think_llm:document.getElementById("dm").value,response_language:document.getElementById("lang").value,max_debate_rounds:parseInt(document.getElementById("rn").value)}
 try{
-var res=await fetch("/.netlify/functions/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)})
-var d=await res.json();document.getElementById("rawJson").textContent=JSON.stringify(d,null,2)
-if(res.ok&&d.signal){
-document.getElementById("rTicker").textContent=d.ticker;document.getElementById("rDate").textContent=d.date
-document.getElementById("rProvider").textContent=cp==="openai"?"OpenAI":"DeepSeek"
-var s=document.getElementById("rSignal"),sig=d.signal||"HOLD";s.textContent=sig;s.className="signal-badge signal-"+sig
-document.getElementById("rSize").textContent=(d.size_fraction*100).toFixed(1)+"%"
-document.getElementById("rTarget").textContent=d.target_price?"$"+Number(d.target_price).toFixed(2):"--"
-document.getElementById("rStop").textContent=d.stop_loss?"$"+Number(d.stop_loss).toFixed(2):"--"
-document.getElementById("rHorizon").textContent=d.horizon_days?d.horizon_days+"天":"--"
-document.getElementById("rConfidence").textContent=d.confidence||"--"
-document.getElementById("rSignalStrength").textContent=d.size_fraction>0.5?"强":d.size_fraction>0.2?"中":"弱"
-document.getElementById("rRationale").textContent=d.rationale||"无内容"
-var a=d.analyst_summaries||{};["technical","fundamentals","sentiment"].forEach(function(k){
-var e=document.getElementById("analyst-"+k),v=a[k]
-if(v){if(typeof v==="object")v=JSON.stringify(v,null,2);e.textContent=v}else{e.textContent="暂无"}
-})
-r.style.display="block"
-}else{var card=r;card.style.display="block";card.innerHTML='<div class="error-state"><svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="err-msg">'+(d.error||"未知错误")+"</div></div>"}
-}catch(e){var card=r;card.style.display="block";card.innerHTML='<div class="error-state"><svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="err-msg">请求失败: '+e.message+"</div></div>"}
-finally{b.disabled=false;l.style.display="none"}
+var r=await fetch("/.netlify/functions/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)})
+var d=await r.json();document.getElementById("rj").textContent=JSON.stringify(d,null,2)
+if(r.ok&&d.signal){
+document.getElementById("rtk").textContent=d.ticker;document.getElementById("rdt").textContent=d.date
+document.getElementById("rpv").textContent=cp==="openai"?"OpenAI":"DeepSeek"
+var e=document.getElementById("sg"),s=d.signal||"HOLD";e.textContent=s;e.className="sg sg-"+s
+document.getElementById("v1").textContent=(d.size_fraction*100).toFixed(1)+"%"
+document.getElementById("v2").textContent=d.target_price?"$"+Number(d.target_price).toFixed(2):"--"
+document.getElementById("v3").textContent=d.stop_loss?"$"+Number(d.stop_loss).toFixed(2):"--"
+document.getElementById("v4").textContent=d.horizon_days?d.horizon_days+"天":"--"
+document.getElementById("v5").textContent=d.confidence||"--"
+document.getElementById("v6").textContent=d.size_fraction>0.5?"强":d.size_fraction>0.2?"中":"弱"
+document.getElementById("rr").textContent=d.rationale||""
+var a=d.analyst_summaries||{},ks=["technical","fundamentals","sentiment"]
+ks.forEach(function(k,i){var el=document.querySelectorAll(".ac")[i],v=a[k]
+el.textContent=v?typeof v==="object"?JSON.stringify(v,null,2):v:"暂无"})
+rc.style.display=""
+}else{rc.style.display="";rc.innerHTML='<div class="er"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="m">'+(d.error||"错误")+"</div></div>"}
+}catch(e){rc.style.display="";rc.innerHTML='<div class="er"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="m">请求失败: '+e.message+"</div></div>"}
+finally{b.disabled=false;ld.style.display="none"}
 }
 </script>
 </body>
