@@ -1,167 +1,336 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradingAgents API æµ‹è¯•</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
-    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
-    h1 { font-size: 1.5rem; margin-bottom: 8px; }
-    p.sub { color: #8b949e; margin-bottom: 24px; font-size: 0.9rem; }
-    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 24px; margin-bottom: 16px; }
-    label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; font-weight: 500; }
-    input, select { width: 100%; padding: 10px 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; font-size: 0.9rem; margin-bottom: 16px; }
-    input:focus, select:focus { outline: none; border-color: #2f81f7; }
-    .row { display: flex; gap: 12px; }
-    .row > * { flex: 1; }
-    button { width: 100%; padding: 12px; background: #2f81f7; color: #fff; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-    button:hover { background: #3a8bff; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    pre { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 16px; overflow-x: auto; font-size: 0.85rem; white-space: pre-wrap; margin-top: 16px; display: none; }
-    .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-    .badge-buy { background: #1a7f37; color: #fff; }
-    .badge-sell { background: #cf222e; color: #fff; }
-    .badge-hold { background: #9e6a03; color: #fff; }
-    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-    .result-item { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; padding: 12px; }
-    .result-item .label { font-size: 0.75rem; color: #8b949e; }
-    .result-item .value { font-size: 1.1rem; font-weight: 600; margin-top: 4px; }
-    .error { color: #f85149; }
-    .loading { text-align: center; padding: 20px; color: #8b949e; }
-    .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #30363d; border-top-color: #2f81f7; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TradingAgents API</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.468.0/lucide.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0e14;color:#e1e7ef;min-height:100vh;display:flex;flex-direction:column}
+.app{max-width:800px;margin:0 auto;padding:32px 20px;width:100%;flex:1}
+header{margin-bottom:32px}
+header h1{font-size:1.4rem;font-weight:600;color:#f0f3f8;display:flex;align-items:center;gap:10px}
+header h1 svg{width:24px;height:24px;color:#6e8ef7}
+header p{font-size:0.85rem;color:#6b7a8f;margin-top:4px}
+/* Provider Tabs */
+.provider-tabs{display:flex;gap:0;background:#131a24;border-radius:10px;padding:3px;border:1px solid #1f2a36;margin-bottom:20px}
+.provider-tab{flex:1;padding:10px 16px;border:none;background:transparent;color:#6b7a8f;font-size:0.85rem;font-weight:500;cursor:pointer;border-radius:7px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.provider-tab:hover{color:#c8d0da}
+.provider-tab.active{background:#1f2a36;color:#e1e7ef;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.provider-tab .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-openai{background:#74aa9c}
+.dot-deepseek{background:#4f8cff}
+/* Cards */
+.card{background:#111821;border:1px solid #1f2a36;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#495a6f;margin-bottom:12px}
+.form-row{display:flex;gap:12px;margin-bottom:12px}
+.form-group{flex:1}
+.form-group label{display:block;font-size:0.78rem;color:#6b7a8f;margin-bottom:5px;font-weight:500}
+.form-group input,.form-group select{width:100%;padding:9px 11px;background:#0b0e14;border:1px solid #1f2a36;border-radius:7px;color:#e1e7ef;font-size:0.85rem;transition:border-color .15s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#4a6f9f}
+.form-group input::placeholder{color:#3a485a}
+.form-group select{cursor:pointer}
+.form-group select option{background:#111821}
+/* Model Selector Chips */
+.model-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.model-chip{flex:1;min-width:140px}
+.model-chip-label{font-size:0.7rem;color:#495a6f;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.model-chip input{width:100%;padding:7px 10px;background:#0b0e14;border:1px solid #1f2a36;border-radius:6px;color:#e1e7ef;font-size:0.82rem;font-family:monospace}
+.model-chip input:focus{outline:none;border-color:#4a6f9f}
+/* Button */
+.btn-analyze{width:100%;padding:11px;background:#4a6f9f;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-analyze:hover{background:#5582b8}
+.btn-analyze:disabled{opacity:.4;cursor:not-allowed}
+.btn-analyze svg{width:16px;height:16px}
+/* Loading */
+.loading{display:none;text-align:center;padding:24px;color:#6b7a8f;font-size:0.85rem}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #1f2a36;border-top-color:#4a6f9f;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Results */
+.result-card{display:none;margin-top:16px;background:#111821;border:1px solid #1f2a36;border-radius:12px;overflow:hidden}
+.result-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1f2a36}
+.result-ticker{font-size:1.1rem;font-weight:700;color:#f0f3f8}
+.result-date{font-size:0.8rem;color:#6b7a8f;margin-left:8px}
+.result-provider{font-size:0.75rem;padding:3px 9px;border-radius:5px;background:#1f2a36;color:#6b7a8f}
+.signal-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:20px;font-size:0.85rem;font-weight:700}
+.signal-BUY{background:#143d26;color:#3fb97b}
+.signal-SELL{background:#3d1418;color:#f05a5a}
+.signal-HOLD{background:#3d3114;color:#d4a043}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1f2a36}
+.result-cell{padding:14px 16px;background:#111821}
+.result-cell .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.result-cell .value{font-size:1rem;font-weight:600;color:#e1e7ef}
+.result-cell.sub .value{font-size:0.85rem;font-weight:400}
+.rationale-section{padding:16px 20px;border-top:1px solid #1f2a36}
+.rationale-section .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.rationale-section .content{font-size:0.85rem;color:#9aabb8;line-height:1.7;white-space:pre-wrap}
+.analyst-tabs{display:flex;gap:2px;background:#131a24;border-radius:7px;padding:2px;margin-top:12px}
+.analyst-tab{flex:1;padding:7px;border:none;background:transparent;color:#6b7a8f;font-size:0.75rem;cursor:pointer;border-radius:5px;transition:all .12s;text-align:center}
+.analyst-tab.active{background:#1f2a36;color:#c8d0da}
+.analyst-content{display:none;padding:12px 16px;font-size:0.82rem;color:#8a9aaa;line-height:1.6;white-space:pre-wrap;border-top:1px solid #1f2a36}
+.analyst-content.show{display:block}
+/* Raw JSON */
+.raw-toggle{text-align:center;padding:12px;border-top:1px solid #1f2a36;cursor:pointer}
+.raw-toggle span{font-size:0.75rem;color:#495a6f;transition:color .12s}
+.raw-toggle:hover span{color:#6b7a8f}
+.raw-json{display:none;padding:12px 16px;font-family:monospace;font-size:0.78rem;color:#6b7a8f;white-space:pre-wrap;background:#0b0e14;border-top:1px solid #1f2a36;max-height:300px;overflow:auto}
+.raw-json.show{display:block}
+/* Error state */
+.error-state{padding:20px;text-align:center}
+.error-state .err-icon{color:#f05a5a;margin-bottom:8px}
+.error-state .err-msg{font-size:0.9rem;color:#f05a5a}
+.error-state .err-detail{font-size:0.8rem;color:#6b7a8f;margin-top:6px}
+/* Footer */
+footer{margin-top:32px;text-align:center;font-size:0.75rem;color:#2d3a4a;padding:20px}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>TradingAgents API</h1>
-    <p class="sub">å¤šæ™ºèƒ½ä½“ LLM é‡‘èäº¤æ˜“åˆ†ææ¡†æ¶ Â· Netlify éƒ¨ç½²</p>
+<div class="app">
+<header>
+<h1>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+TradingAgents
+</h1>
+<p>¶àÖÇÄÜÌå LLM ½ğÈÚ·ÖÎö  ¡¤  Ö§³Ö OpenAI / DeepSeek</p>
+</header>
 
-    <div class="card">
-      <div class="row">
-        <div>
-          <label>Ticker</label>
-          <input type="text" id="ticker" value="NVDA" placeholder="AAPL">
-        </div>
-        <div>
-          <label>æ—¥æœŸï¼ˆå¯é€‰ï¼‰</label>
-          <input type="date" id="tradeDate">
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>LLM Provider</label>
-          <select id="provider">
-            <option value="openai">OpenAI</option>
-            <option value="google_genai">Google Gemini</option>
-            <option value="anthropic">Anthropic Claude</option>
-          </select>
-        </div>
-        <div>
-          <label>Deep Think æ¨¡å‹</label>
-          <input type="text" id="deepModel" value="gpt-5.4">
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>Quick Think æ¨¡å‹</label>
-          <input type="text" id="quickModel" value="gpt-5.4-mini">
-        </div>
-        <div>
-          <label>è¾“å‡ºè¯­è¨€</label>
-          <select id="language">
-            <option value="zh-CN">ç®€ä½“ä¸­æ–‡</option>
-            <option value="zh-TW">ç¹ä½“ä¸­æ–‡</option>
-            <option value="en-US">English</option>
-          </select>
-        </div>
-      </div>
-      <button onclick="analyze()">åˆ†æ</button>
-    </div>
+<!-- Provider Tabs -->
+<div class="provider-tabs" id="providerTabs">
+<button class="provider-tab active" data-provider="openai">
+<span class="dot dot-openai"></span> OpenAI
+</button>
+<button class="provider-tab" data-provider="deepseek">
+<span class="dot dot-deepseek"></span> DeepSeek
+</button>
+</div>
 
-    <div id="loading" class="loading" style="display:none">
-      <span class="spinner"></span>æ­£åœ¨è¿è¡Œåˆ†æï¼ˆLLM è°ƒç”¨éœ€ 10-30 ç§’ï¼‰...
-    </div>
+<!-- Main Input -->
+<div class="card">
+<div class="form-row">
+<div class="form-group">
+<label>¹ÉÆ±´úÂë</label>
+<input type="text" id="ticker" value="NVDA" placeholder="ÀıÈç: AAPL, 0700.HK">
+</div>
+<div class="form-group">
+<label>½»Ò×ÈÕÆÚ</label>
+<input type="date" id="tradeDate">
+</div>
+</div>
 
-    <pre id="result"></pre>
+<div class="model-group">
+<div class="model-chip">
+<div class="model-chip-label">¿ìËÙÄ£ĞÍ</div>
+<input type="text" id="quickModel" value="gpt-4o-mini" placeholder="gpt-4o-mini">
+</div>
+<div class="model-chip">
+<div class="model-chip-label">Éî¶ÈÄ£ĞÍ</div>
+<input type="text" id="deepModel" value="gpt-4o" placeholder="gpt-4o">
+</div>
+</div>
 
-    <div class="card" id="resultCard" style="display:none">
-      <h3 id="signalTitle" style="margin-bottom:12px"></h3>
-      <div class="result-grid">
-        <div class="result-item"><div class="label">ä¿¡å·</div><div class="value" id="rSignal"></div></div>
-        <div class="result-item"><div class="label">ä»“ä½æ¯”ä¾‹</div><div class="value" id="rSize"></div></div>
-        <div class="result-item"><div class="label">ç›®æ ‡ä»·</div><div class="value" id="rTarget"></div></div>
-        <div class="result-item"><div class="label">æ­¢æŸä»·</div><div class="value" id="rStop"></div></div>
-        <div class="result-item"><div class="label">æŒæœ‰æœŸ</div><div class="value" id="rHorizon"></div></div>
-        <div class="result-item"><div class="label">ç½®ä¿¡åº¦</div><div class="value" id="rConfidence"></div></div>
-      </div>
-      <div style="margin-top:16px">
-        <div class="label">æ¨ç†æ‘˜è¦</div>
-        <div id="rRationale" style="margin-top:6px;font-size:0.9rem;color:#8b949e;line-height:1.6"></div>
-      </div>
-    </div>
-  </div>
+<div class="form-row">
+<div class="form-group">
+<label>Êä³öÓïÑÔ</label>
+<select id="language">
+<option value="zh-CN" selected>¼òÌåÖĞÎÄ</option>
+<option value="zh-TW">·±ÌåÖĞÎÄ</option>
+<option value="en-US">English</option>
+</select>
+</div>
+<div class="form-group">
+<label>ÍÆÀíÂÖÊı</label>
+<select id="debateRounds">
+<option value="1">1 ÂÖ</option>
+<option value="2">2 ÂÖ</option>
+<option value="3">3 ÂÖ</option>
+</select>
+</div>
+</div>
 
-  <script>
-    async function analyze() {
-      const btn = document.querySelector('button');
-      const loading = document.getElementById('loading');
-      const result = document.getElementById('result');
-      const resultCard = document.getElementById('resultCard');
+<button class="btn-analyze" onclick="analyze()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+¿ªÊ¼·ÖÎö
+</button>
+</div>
 
-      btn.disabled = true;
-      loading.style.display = 'block';
-      result.style.display = 'none';
-      resultCard.style.display = 'none';
+<div class="loading" id="loading">
+<span class="spinner"></span>ÕıÔÚÔËĞĞ·ÖÎö£¬µÈ´ı LLM ÏìÓ¦...
+</div>
 
-      const payload = {
-        ticker: document.getElementById('ticker').value.trim(),
-        date: document.getElementById('tradeDate').value || undefined,
-        llm_provider: document.getElementById('provider').value,
-        deep_think_llm: document.getElementById('deepModel').value,
-        quick_think_llm: document.getElementById('quickModel').value,
-        response_language: document.getElementById('language').value,
-        max_debate_rounds: 1,
-        max_risk_discuss_rounds: 1
-      };
+<!-- Results -->
+<div class="result-card" id="resultCard">
 
-      try {
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
+<div class="result-header">
+<div>
+<span class="result-ticker" id="rTicker"></span>
+<span class="result-date" id="rDate"></span>
+</div>
+<span class="result-provider" id="rProvider"></span>
+</div>
 
-        result.textContent = JSON.stringify(data, null, 2);
-        result.style.display = 'block';
+<div style="padding:16px 20px;border-bottom:1px solid #1f2a36">
+<span class="signal-badge" id="rSignal"></span>
+</div>
 
-        if (res.ok) {
-          document.getElementById('rSignal').textContent = data.signal;
-          document.getElementById('rSignal').className = 'value badge badge-' + data.signal?.toLowerCase();
-          document.getElementById('rSize').textContent = (data.size_fraction * 100).toFixed(1) + '%';
-          document.getElementById('rTarget').textContent = data.target_price ? '$' + data.target_price.toFixed(2) : '-';
-          document.getElementById('rStop').textContent = data.stop_loss ? '$' + data.stop_loss.toFixed(2) : '-';
-          document.getElementById('rHorizon').textContent = data.horizon_days ? data.horizon_days + ' å¤©' : '-';
-          document.getElementById('rConfidence').textContent = data.confidence;
-          document.getElementById('rRationale').textContent = data.rationale || 'æ— ';
-          document.getElementById('signalTitle').innerHTML = data.ticker + ' Â· ' + data.date;
-          resultCard.style.display = 'block';
-        } else {
-          document.getElementById('signalTitle').innerHTML = 'é”™è¯¯';
-          document.getElementById('rRationale').textContent = data.error || 'æœªçŸ¥é”™è¯¯';
-          resultCard.style.display = 'block';
-        }
-      } catch (err) {
-        result.textContent = 'è¯·æ±‚å¤±è´¥: ' + err.message;
-        result.style.display = 'block';
-      } finally {
-        btn.disabled = false;
-        loading.style.display = 'none';
-      }
-    }
-  </script>
+<div class="result-grid">
+<div class="result-cell"><div class="label">²ÖÎ»±ÈÀı</div><div class="value" id="rSize"></div></div>
+<div class="result-cell"><div class="label">Ä¿±ê¼Û</div><div class="value" id="rTarget"></div></div>
+<div class="result-cell"><div class="label">Ö¹Ëğ¼Û</div><div class="value" id="rStop"></div></div>
+<div class="result-cell"><div class="label">³ÖÓĞÖÜÆÚ</div><div class="value" id="rHorizon"></div></div>
+<div class="result-cell"><div class="label">ÖÃĞÅ¶È</div><div class="value" id="rConfidence"></div></div>
+<div class="result-cell"><div class="label">ĞÅºÅÇ¿¶È</div><div class="value" id="rSignalStrength"></div></div>
+</div>
+
+<div class="rationale-section">
+<div class="label">×ÛºÏÍÆÀí</div>
+<div class="content" id="rRationale"></div>
+</div>
+
+<!-- Analyst tabs -->
+<div class="analyst-tabs" id="analystTabs">
+<button class="analyst-tab active" data-analyst="technical">¼¼ÊõÃæ</button>
+<button class="analyst-tab" data-analyst="fundamentals">»ù±¾Ãæ</button>
+<button class="analyst-tab" data-analyst="sentiment">ÇéĞ÷Ãæ</button>
+</div>
+<div class="analyst-content show" id="analyst-technical"></div>
+<div class="analyst-content" id="analyst-fundamentals"></div>
+<div class="analyst-content" id="analyst-sentiment"></div>
+
+<div class="raw-toggle" onclick="toggleRaw()">
+<span>²é¿´Ô­Ê¼ JSON</span>
+</div>
+<div class="raw-json" id="rawJson"></div>
+</div>
+</div>
+
+<footer>API ÓÉ Netlify Functions Çı¶¯ ¡¤ Êı¾İ½ö¹©²Î¿¼£¬²»¹¹³ÉÍ¶×Ê½¨Òé</footer>
+
+<script>
+// ---- Provider switching ----
+const providerConfigs = {
+openai:{quick:"gpt-4o-mini",deep:"gpt-4o"},
+deepseek:{quick:"deepseek-chat",deep:"deepseek-reasoner"}
+}
+let currentProvider="openai"
+
+document.querySelectorAll('.provider-tab').forEach(tab=>{
+tab.addEventListener('click',()=>{
+document.querySelectorAll('.provider-tab').forEach(t=>t.classList.remove('active'))
+tab.classList.add('active')
+currentProvider=tab.dataset.provider
+const models=providerConfigs[currentProvider]
+document.getElementById('quickModel').value=models.quick
+document.getElementById('deepModel').value=models.deep
+})
+})
+
+// ---- Analyst tab switching ----
+document.querySelectorAll('.analyst-tab').forEach(tab=>{
+tab.addEventListener('click',()=>{
+document.querySelectorAll('.analyst-tab').forEach(t=>t.classList.remove('active'))
+document.querySelectorAll('.analyst-content').forEach(c=>c.classList.remove('show'))
+tab.classList.add('active')
+document.getElementById('analyst-'+tab.dataset.analyst).classList.add('show')
+})
+})
+
+// ---- Raw JSON toggle ----
+function toggleRaw(){
+const el=document.getElementById('rawJson')
+el.classList.toggle('show')
+}
+
+// ---- Main analyze function ----
+async function analyze(){
+const btn=document.querySelector('.btn-analyze')
+const loading=document.getElementById('loading')
+const resultCard=document.getElementById('resultCard')
+
+btn.disabled=true
+loading.style.display='block'
+resultCard.style.display='none'
+
+const payload={
+ticker:document.getElementById('ticker').value.trim(),
+date:document.getElementById('tradeDate').value||undefined,
+llm_provider:currentProvider,
+quick_think_llm:document.getElementById('quickModel').value,
+deep_think_llm:document.getElementById('deepModel').value,
+response_language:document.getElementById('language').value,
+max_debate_rounds:parseInt(document.getElementById('debateRounds').value),
+max_risk_discuss_rounds:1,
+reasoning_effort:'medium'
+}
+
+try{
+const res=await fetch('/.netlify/functions/analyze',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(payload)
+})
+const data=await res.json()
+
+document.getElementById('rawJson').textContent=JSON.stringify(data,null,2)
+
+if(res.ok&&data.signal){
+// Header
+document.getElementById('rTicker').textContent=data.ticker
+document.getElementById('rDate').textContent=data.date
+document.getElementById('rProvider').textContent=currentProvider==='openai'?'OpenAI':currentProvider==='deepseek'?'DeepSeek':currentProvider
+
+// Signal badge
+const sigEl=document.getElementById('rSignal')
+const signal=data.signal||'HOLD'
+sigEl.textContent=signal
+sigEl.className='signal-badge signal-'+signal
+
+// Grid values
+document.getElementById('rSize').textContent=(data.size_fraction*100).toFixed(1)+'%'
+document.getElementById('rTarget').textContent=data.target_price?'$'+Number(data.target_price).toFixed(2):'--'
+document.getElementById('rStop').textContent=data.stop_loss?'$'+Number(data.stop_loss).toFixed(2):'--'
+document.getElementById('rHorizon').textContent=data.horizon_days?data.horizon_days+' Ìì':'--'
+document.getElementById('rConfidence').textContent=data.confidence||'--'
+document.getElementById('rSignalStrength').textContent=data.size_fraction>0.5?'Ç¿':data.size_fraction>0.2?'ÖĞ':'Èõ'
+
+// Rationale
+document.getElementById('rRationale').textContent=data.rationale||'ÎŞÍÆÀíÄÚÈİ'
+
+// Analyst summaries
+const summaries=data.analyst_summaries||{}
+const keys={technical:'technical',fundamentals:'fundamentals',sentiment:'sentiment'}
+for(const[key,field]of Object.entries(keys)){
+const el=document.getElementById('analyst-'+key)
+if(summaries[field]){
+let text=summaries[field]
+if(typeof text==='object')text=JSON.stringify(text,null,2)
+el.textContent=text
+}else{
+el.textContent='ÔİÎŞ·ÖÎöÕªÒª'
+}
+}
+
+resultCard.style.display='block'
+}else{
+showError(data.error||'Î´Öª´íÎó',data)
+}
+}catch(err){
+showError('ÇëÇóÊ§°Ü: '+err.message)
+}finally{
+btn.disabled=false
+loading.style.display='none'
+}
+}
+
+function showError(msg,data){
+const card=document.getElementById('resultCard')
+card.style.display='block'
+card.innerHTML='<div class="error-state">'+
+'<svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'+
+'<div class="err-msg">'+msg+'</div>'+
+(data?'<div class="err-detail">'+JSON.stringify(data,null,2)+'</div>':'')+
+'</div>'
+}
+</script>
 </body>
 </html>
