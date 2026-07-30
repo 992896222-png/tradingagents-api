@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>TradingAgents API</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.468.0/lucide.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0b0e14;color:#e1e7ef;min-height:100vh;display:flex;flex-direction:column}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0b0e14;color:#e1e7ef;min-height:100vh;display:flex;flex-direction:column}
 .app{max-width:800px;margin:0 auto;padding:32px 20px;width:100%;flex:1}
 header{margin-bottom:32px}
 header h1{font-size:1.4rem;font-weight:600;color:#f0f3f8;display:flex;align-items:center;gap:10px}
-header h1 svg{width:24px;height:24px;color:#6e8ef7}
 header p{font-size:0.85rem;color:#6b7a8f;margin-top:4px}
-/* Provider Tabs */
 .provider-tabs{display:flex;gap:0;background:#131a24;border-radius:10px;padding:3px;border:1px solid #1f2a36;margin-bottom:20px}
 .provider-tab{flex:1;padding:10px 16px;border:none;background:transparent;color:#6b7a8f;font-size:0.85rem;font-weight:500;cursor:pointer;border-radius:7px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .provider-tab:hover{color:#c8d0da}
@@ -21,33 +18,25 @@ header p{font-size:0.85rem;color:#6b7a8f;margin-top:4px}
 .provider-tab .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .dot-openai{background:#74aa9c}
 .dot-deepseek{background:#4f8cff}
-/* Cards */
 .card{background:#111821;border:1px solid #1f2a36;border-radius:12px;padding:20px;margin-bottom:16px}
-.card-title{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#495a6f;margin-bottom:12px}
 .form-row{display:flex;gap:12px;margin-bottom:12px}
 .form-group{flex:1}
 .form-group label{display:block;font-size:0.78rem;color:#6b7a8f;margin-bottom:5px;font-weight:500}
-.form-group input,.form-group select{width:100%;padding:9px 11px;background:#0b0e14;border:1px solid #1f2a36;border-radius:7px;color:#e1e7ef;font-size:0.85rem;transition:border-color .15s}
+.form-group input,.form-group select{width:100%;padding:9px 11px;background:#0b0e14;border:1px solid #1f2a36;border-radius:7px;color:#e1e7ef;font-size:0.85rem}
 .form-group input:focus,.form-group select:focus{outline:none;border-color:#4a6f9f}
-.form-group input::placeholder{color:#3a485a}
-.form-group select{cursor:pointer}
 .form-group select option{background:#111821}
-/* Model Selector Chips */
 .model-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .model-chip{flex:1;min-width:140px}
 .model-chip-label{font-size:0.7rem;color:#495a6f;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
 .model-chip input{width:100%;padding:7px 10px;background:#0b0e14;border:1px solid #1f2a36;border-radius:6px;color:#e1e7ef;font-size:0.82rem;font-family:monospace}
 .model-chip input:focus{outline:none;border-color:#4a6f9f}
-/* Button */
-.btn-analyze{width:100%;padding:11px;background:#4a6f9f;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-analyze{width:100%;padding:11px;background:#4a6f9f;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-analyze:hover{background:#5582b8}
 .btn-analyze:disabled{opacity:.4;cursor:not-allowed}
 .btn-analyze svg{width:16px;height:16px}
-/* Loading */
 .loading{display:none;text-align:center;padding:24px;color:#6b7a8f;font-size:0.85rem}
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid #1f2a36;border-top-color:#4a6f9f;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* Results */
 .result-card{display:none;margin-top:16px;background:#111821;border:1px solid #1f2a36;border-radius:12px;overflow:hidden}
 .result-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1f2a36}
 .result-ticker{font-size:1.1rem;font-weight:700;color:#f0f3f8}
@@ -61,27 +50,23 @@ header p{font-size:0.85rem;color:#6b7a8f;margin-top:4px}
 .result-cell{padding:14px 16px;background:#111821}
 .result-cell .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
 .result-cell .value{font-size:1rem;font-weight:600;color:#e1e7ef}
-.result-cell.sub .value{font-size:0.85rem;font-weight:400}
 .rationale-section{padding:16px 20px;border-top:1px solid #1f2a36}
 .rationale-section .label{font-size:0.72rem;color:#495a6f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
 .rationale-section .content{font-size:0.85rem;color:#9aabb8;line-height:1.7;white-space:pre-wrap}
 .analyst-tabs{display:flex;gap:2px;background:#131a24;border-radius:7px;padding:2px;margin-top:12px}
-.analyst-tab{flex:1;padding:7px;border:none;background:transparent;color:#6b7a8f;font-size:0.75rem;cursor:pointer;border-radius:5px;transition:all .12s;text-align:center}
+.analyst-tab{flex:1;padding:7px;border:none;background:transparent;color:#6b7a8f;font-size:0.75rem;cursor:pointer;border-radius:5px;text-align:center}
 .analyst-tab.active{background:#1f2a36;color:#c8d0da}
 .analyst-content{display:none;padding:12px 16px;font-size:0.82rem;color:#8a9aaa;line-height:1.6;white-space:pre-wrap;border-top:1px solid #1f2a36}
 .analyst-content.show{display:block}
-/* Raw JSON */
 .raw-toggle{text-align:center;padding:12px;border-top:1px solid #1f2a36;cursor:pointer}
-.raw-toggle span{font-size:0.75rem;color:#495a6f;transition:color .12s}
+.raw-toggle span{font-size:0.75rem;color:#495a6f}
 .raw-toggle:hover span{color:#6b7a8f}
 .raw-json{display:none;padding:12px 16px;font-family:monospace;font-size:0.78rem;color:#6b7a8f;white-space:pre-wrap;background:#0b0e14;border-top:1px solid #1f2a36;max-height:300px;overflow:auto}
 .raw-json.show{display:block}
-/* Error state */
 .error-state{padding:20px;text-align:center}
 .error-state .err-icon{color:#f05a5a;margin-bottom:8px}
 .error-state .err-msg{font-size:0.9rem;color:#f05a5a}
 .error-state .err-detail{font-size:0.8rem;color:#6b7a8f;margin-top:6px}
-/* Footer */
 footer{margin-top:32px;text-align:center;font-size:0.75rem;color:#2d3a4a;padding:20px}
 </style>
 </head>
@@ -89,247 +74,95 @@ footer{margin-top:32px;text-align:center;font-size:0.75rem;color:#2d3a4a;padding
 <div class="app">
 <header>
 <h1>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
 TradingAgents
 </h1>
-<p>¶àÖÇÄÜÌå LLM ½ğÈÚ·ÖÎö  ¡¤  Ö§³Ö OpenAI / DeepSeek</p>
+<p>å¤šæ™ºèƒ½ä½“ LLM é‡‘èåˆ†æ Â· æ”¯æŒ OpenAI / DeepSeek</p>
 </header>
-
-<!-- Provider Tabs -->
 <div class="provider-tabs" id="providerTabs">
-<button class="provider-tab active" data-provider="openai">
-<span class="dot dot-openai"></span> OpenAI
-</button>
-<button class="provider-tab" data-provider="deepseek">
-<span class="dot dot-deepseek"></span> DeepSeek
-</button>
+<button class="provider-tab active" data-provider="openai"><span class="dot dot-openai"></span> OpenAI</button>
+<button class="provider-tab" data-provider="deepseek"><span class="dot dot-deepseek"></span> DeepSeek</button>
 </div>
-
-<!-- Main Input -->
 <div class="card">
 <div class="form-row">
-<div class="form-group">
-<label>¹ÉÆ±´úÂë</label>
-<input type="text" id="ticker" value="NVDA" placeholder="ÀıÈç: AAPL, 0700.HK">
+<div class="form-group"><label>è‚¡ç¥¨ä»£ç </label><input type="text" id="ticker" value="NVDA" placeholder="ä¾‹å¦‚: AAPL, 0700.HK"></div>
+<div class="form-group"><label>äº¤æ˜“æ—¥æœŸ</label><input type="date" id="tradeDate"></div>
 </div>
-<div class="form-group">
-<label>½»Ò×ÈÕÆÚ</label>
-<input type="date" id="tradeDate">
-</div>
-</div>
-
 <div class="model-group">
-<div class="model-chip">
-<div class="model-chip-label">¿ìËÙÄ£ĞÍ</div>
-<input type="text" id="quickModel" value="gpt-4o-mini" placeholder="gpt-4o-mini">
+<div class="model-chip"><div class="model-chip-label">å¿«é€Ÿæ¨¡å‹</div><input type="text" id="quickModel" value="gpt-4o-mini"></div>
+<div class="model-chip"><div class="model-chip-label">æ·±åº¦æ¨¡å‹</div><input type="text" id="deepModel" value="gpt-4o"></div>
 </div>
-<div class="model-chip">
-<div class="model-chip-label">Éî¶ÈÄ£ĞÍ</div>
-<input type="text" id="deepModel" value="gpt-4o" placeholder="gpt-4o">
-</div>
-</div>
-
 <div class="form-row">
-<div class="form-group">
-<label>Êä³öÓïÑÔ</label>
-<select id="language">
-<option value="zh-CN" selected>¼òÌåÖĞÎÄ</option>
-<option value="zh-TW">·±ÌåÖĞÎÄ</option>
-<option value="en-US">English</option>
-</select>
+<div class="form-group"><label>è¾“å‡ºè¯­è¨€</label><select id="language"><option value="zh-CN" selected>ç®€ä½“ä¸­æ–‡</option><option value="zh-TW">ç¹ä½“ä¸­æ–‡</option><option value="en-US">English</option></select></div>
+<div class="form-group"><label>æ¨ç†è½®æ•°</label><select id="debateRounds"><option value="1">1 è½®</option><option value="2">2 è½®</option><option value="3">3 è½®</option></select></div>
 </div>
-<div class="form-group">
-<label>ÍÆÀíÂÖÊı</label>
-<select id="debateRounds">
-<option value="1">1 ÂÖ</option>
-<option value="2">2 ÂÖ</option>
-<option value="3">3 ÂÖ</option>
-</select>
+<button class="btn-analyze" onclick="analyze()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>å¼€å§‹åˆ†æ</button>
 </div>
-</div>
-
-<button class="btn-analyze" onclick="analyze()">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-¿ªÊ¼·ÖÎö
-</button>
-</div>
-
-<div class="loading" id="loading">
-<span class="spinner"></span>ÕıÔÚÔËĞĞ·ÖÎö£¬µÈ´ı LLM ÏìÓ¦...
-</div>
-
-<!-- Results -->
+<div class="loading" id="loading"><span class="spinner"></span>æ­£åœ¨è¿è¡Œåˆ†æï¼Œç­‰å¾… LLM å“åº”...</div>
 <div class="result-card" id="resultCard">
-
-<div class="result-header">
-<div>
-<span class="result-ticker" id="rTicker"></span>
-<span class="result-date" id="rDate"></span>
-</div>
-<span class="result-provider" id="rProvider"></span>
-</div>
-
-<div style="padding:16px 20px;border-bottom:1px solid #1f2a36">
-<span class="signal-badge" id="rSignal"></span>
-</div>
-
+<div class="result-header"><div><span class="result-ticker" id="rTicker"></span><span class="result-date" id="rDate"></span></div><span class="result-provider" id="rProvider"></span></div>
+<div style="padding:16px 20px;border-bottom:1px solid #1f2a36"><span class="signal-badge" id="rSignal"></span></div>
 <div class="result-grid">
-<div class="result-cell"><div class="label">²ÖÎ»±ÈÀı</div><div class="value" id="rSize"></div></div>
-<div class="result-cell"><div class="label">Ä¿±ê¼Û</div><div class="value" id="rTarget"></div></div>
-<div class="result-cell"><div class="label">Ö¹Ëğ¼Û</div><div class="value" id="rStop"></div></div>
-<div class="result-cell"><div class="label">³ÖÓĞÖÜÆÚ</div><div class="value" id="rHorizon"></div></div>
-<div class="result-cell"><div class="label">ÖÃĞÅ¶È</div><div class="value" id="rConfidence"></div></div>
-<div class="result-cell"><div class="label">ĞÅºÅÇ¿¶È</div><div class="value" id="rSignalStrength"></div></div>
+<div class="result-cell"><div class="label">ä»“ä½æ¯”ä¾‹</div><div class="value" id="rSize"></div></div>
+<div class="result-cell"><div class="label">ç›®æ ‡ä»·</div><div class="value" id="rTarget"></div></div>
+<div class="result-cell"><div class="label">æ­¢æŸä»·</div><div class="value" id="rStop"></div></div>
+<div class="result-cell"><div class="label">æŒæœ‰å‘¨æœŸ</div><div class="value" id="rHorizon"></div></div>
+<div class="result-cell"><div class="label">ç½®ä¿¡åº¦</div><div class="value" id="rConfidence"></div></div>
+<div class="result-cell"><div class="label">ä¿¡å·å¼ºåº¦</div><div class="value" id="rSignalStrength"></div></div>
 </div>
-
-<div class="rationale-section">
-<div class="label">×ÛºÏÍÆÀí</div>
-<div class="content" id="rRationale"></div>
-</div>
-
-<!-- Analyst tabs -->
+<div class="rationale-section"><div class="label">ç»¼åˆæ¨ç†</div><div class="content" id="rRationale"></div></div>
 <div class="analyst-tabs" id="analystTabs">
-<button class="analyst-tab active" data-analyst="technical">¼¼ÊõÃæ</button>
-<button class="analyst-tab" data-analyst="fundamentals">»ù±¾Ãæ</button>
-<button class="analyst-tab" data-analyst="sentiment">ÇéĞ÷Ãæ</button>
+<button class="analyst-tab active" data-analyst="technical">æŠ€æœ¯é¢</button>
+<button class="analyst-tab" data-analyst="fundamentals">åŸºæœ¬é¢</button>
+<button class="analyst-tab" data-analyst="sentiment">æƒ…ç»ªé¢</button>
 </div>
 <div class="analyst-content show" id="analyst-technical"></div>
 <div class="analyst-content" id="analyst-fundamentals"></div>
 <div class="analyst-content" id="analyst-sentiment"></div>
-
-<div class="raw-toggle" onclick="toggleRaw()">
-<span>²é¿´Ô­Ê¼ JSON</span>
-</div>
+<div class="raw-toggle" onclick="toggleRaw()"><span>æŸ¥çœ‹åŸå§‹ JSON</span></div>
 <div class="raw-json" id="rawJson"></div>
 </div>
 </div>
-
-<footer>API ÓÉ Netlify Functions Çı¶¯ ¡¤ Êı¾İ½ö¹©²Î¿¼£¬²»¹¹³ÉÍ¶×Ê½¨Òé</footer>
-
+<footer>API ç”± Netlify Functions é©±åŠ¨ Â· æ•°æ®ä»…ä¾›å‚è€ƒï¼Œä¸æ„æˆæŠ•èµ„å»ºè®®</footer>
 <script>
-// ---- Provider switching ----
-const providerConfigs = {
-openai:{quick:"gpt-4o-mini",deep:"gpt-4o"},
-deepseek:{quick:"deepseek-chat",deep:"deepseek-reasoner"}
-}
-let currentProvider="openai"
-
-document.querySelectorAll('.provider-tab').forEach(tab=>{
-tab.addEventListener('click',()=>{
-document.querySelectorAll('.provider-tab').forEach(t=>t.classList.remove('active'))
-tab.classList.add('active')
-currentProvider=tab.dataset.provider
-const models=providerConfigs[currentProvider]
-document.getElementById('quickModel').value=models.quick
-document.getElementById('deepModel').value=models.deep
-})
-})
-
-// ---- Analyst tab switching ----
-document.querySelectorAll('.analyst-tab').forEach(tab=>{
-tab.addEventListener('click',()=>{
-document.querySelectorAll('.analyst-tab').forEach(t=>t.classList.remove('active'))
-document.querySelectorAll('.analyst-content').forEach(c=>c.classList.remove('show'))
-tab.classList.add('active')
-document.getElementById('analyst-'+tab.dataset.analyst).classList.add('show')
-})
-})
-
-// ---- Raw JSON toggle ----
-function toggleRaw(){
-const el=document.getElementById('rawJson')
-el.classList.toggle('show')
-}
-
-// ---- Main analyze function ----
+function toggleRaw(){document.getElementById("rawJson").classList.toggle("show")}
+var P={openai:{quick:"gpt-4o-mini",deep:"gpt-4o"},deepseek:{quick:"deepseek-chat",deep:"deepseek-reasoner"}},cp="openai"
+document.querySelectorAll(".provider-tab").forEach(function(t){t.addEventListener("click",function(){
+document.querySelectorAll(".provider-tab").forEach(function(x){x.classList.remove("active")})
+t.classList.add("active");cp=t.dataset.provider;var m=P[cp]
+document.getElementById("quickModel").value=m.quick;document.getElementById("deepModel").value=m.deep
+})})
+document.querySelectorAll(".analyst-tab").forEach(function(t){t.addEventListener("click",function(){
+document.querySelectorAll(".analyst-tab").forEach(function(x){x.classList.remove("active")})
+document.querySelectorAll(".analyst-content").forEach(function(x){x.classList.remove("show")})
+t.classList.add("active");document.getElementById("analyst-"+t.dataset.analyst).classList.add("show")
+})})
 async function analyze(){
-const btn=document.querySelector('.btn-analyze')
-const loading=document.getElementById('loading')
-const resultCard=document.getElementById('resultCard')
-
-btn.disabled=true
-loading.style.display='block'
-resultCard.style.display='none'
-
-const payload={
-ticker:document.getElementById('ticker').value.trim(),
-date:document.getElementById('tradeDate').value||undefined,
-llm_provider:currentProvider,
-quick_think_llm:document.getElementById('quickModel').value,
-deep_think_llm:document.getElementById('deepModel').value,
-response_language:document.getElementById('language').value,
-max_debate_rounds:parseInt(document.getElementById('debateRounds').value),
-max_risk_discuss_rounds:1,
-reasoning_effort:'medium'
-}
-
+var b=document.querySelector(".btn-analyze"),l=document.getElementById("loading"),r=document.getElementById("resultCard")
+b.disabled=true;l.style.display="block";r.style.display="none"
+var p={ticker:document.getElementById("ticker").value.trim(),date:document.getElementById("tradeDate").value||undefined,llm_provider:cp,quick_think_llm:document.getElementById("quickModel").value,deep_think_llm:document.getElementById("deepModel").value,response_language:document.getElementById("language").value,max_debate_rounds:parseInt(document.getElementById("debateRounds").value),max_risk_discuss_rounds:1,reasoning_effort:"medium"}
 try{
-const res=await fetch('/.netlify/functions/analyze',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(payload)
+var res=await fetch("/.netlify/functions/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)})
+var d=await res.json();document.getElementById("rawJson").textContent=JSON.stringify(d,null,2)
+if(res.ok&&d.signal){
+document.getElementById("rTicker").textContent=d.ticker;document.getElementById("rDate").textContent=d.date
+document.getElementById("rProvider").textContent=cp==="openai"?"OpenAI":"DeepSeek"
+var s=document.getElementById("rSignal"),sig=d.signal||"HOLD";s.textContent=sig;s.className="signal-badge signal-"+sig
+document.getElementById("rSize").textContent=(d.size_fraction*100).toFixed(1)+"%"
+document.getElementById("rTarget").textContent=d.target_price?"$"+Number(d.target_price).toFixed(2):"--"
+document.getElementById("rStop").textContent=d.stop_loss?"$"+Number(d.stop_loss).toFixed(2):"--"
+document.getElementById("rHorizon").textContent=d.horizon_days?d.horizon_days+"å¤©":"--"
+document.getElementById("rConfidence").textContent=d.confidence||"--"
+document.getElementById("rSignalStrength").textContent=d.size_fraction>0.5?"å¼º":d.size_fraction>0.2?"ä¸­":"å¼±"
+document.getElementById("rRationale").textContent=d.rationale||"æ— å†…å®¹"
+var a=d.analyst_summaries||{};["technical","fundamentals","sentiment"].forEach(function(k){
+var e=document.getElementById("analyst-"+k),v=a[k]
+if(v){if(typeof v==="object")v=JSON.stringify(v,null,2);e.textContent=v}else{e.textContent="æš‚æ— "}
 })
-const data=await res.json()
-
-document.getElementById('rawJson').textContent=JSON.stringify(data,null,2)
-
-if(res.ok&&data.signal){
-// Header
-document.getElementById('rTicker').textContent=data.ticker
-document.getElementById('rDate').textContent=data.date
-document.getElementById('rProvider').textContent=currentProvider==='openai'?'OpenAI':currentProvider==='deepseek'?'DeepSeek':currentProvider
-
-// Signal badge
-const sigEl=document.getElementById('rSignal')
-const signal=data.signal||'HOLD'
-sigEl.textContent=signal
-sigEl.className='signal-badge signal-'+signal
-
-// Grid values
-document.getElementById('rSize').textContent=(data.size_fraction*100).toFixed(1)+'%'
-document.getElementById('rTarget').textContent=data.target_price?'$'+Number(data.target_price).toFixed(2):'--'
-document.getElementById('rStop').textContent=data.stop_loss?'$'+Number(data.stop_loss).toFixed(2):'--'
-document.getElementById('rHorizon').textContent=data.horizon_days?data.horizon_days+' Ìì':'--'
-document.getElementById('rConfidence').textContent=data.confidence||'--'
-document.getElementById('rSignalStrength').textContent=data.size_fraction>0.5?'Ç¿':data.size_fraction>0.2?'ÖĞ':'Èõ'
-
-// Rationale
-document.getElementById('rRationale').textContent=data.rationale||'ÎŞÍÆÀíÄÚÈİ'
-
-// Analyst summaries
-const summaries=data.analyst_summaries||{}
-const keys={technical:'technical',fundamentals:'fundamentals',sentiment:'sentiment'}
-for(const[key,field]of Object.entries(keys)){
-const el=document.getElementById('analyst-'+key)
-if(summaries[field]){
-let text=summaries[field]
-if(typeof text==='object')text=JSON.stringify(text,null,2)
-el.textContent=text
-}else{
-el.textContent='ÔİÎŞ·ÖÎöÕªÒª'
-}
-}
-
-resultCard.style.display='block'
-}else{
-showError(data.error||'Î´Öª´íÎó',data)
-}
-}catch(err){
-showError('ÇëÇóÊ§°Ü: '+err.message)
-}finally{
-btn.disabled=false
-loading.style.display='none'
-}
-}
-
-function showError(msg,data){
-const card=document.getElementById('resultCard')
-card.style.display='block'
-card.innerHTML='<div class="error-state">'+
-'<svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'+
-'<div class="err-msg">'+msg+'</div>'+
-(data?'<div class="err-detail">'+JSON.stringify(data,null,2)+'</div>':'')+
-'</div>'
+r.style.display="block"
+}else{var card=r;card.style.display="block";card.innerHTML='<div class="error-state"><svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="err-msg">'+(d.error||"æœªçŸ¥é”™è¯¯")+"</div></div>"}
+}catch(e){var card=r;card.style.display="block";card.innerHTML='<div class="error-state"><svg class="err-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div class="err-msg">è¯·æ±‚å¤±è´¥: '+e.message+"</div></div>"}
+finally{b.disabled=false;l.style.display="none"}
 }
 </script>
 </body>
